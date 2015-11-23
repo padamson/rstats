@@ -1,0 +1,82 @@
+---
+title: "3.2 Measures of Variability"
+author: "Paul Adamson"
+date: "November 22, 2015"
+output: html_document
+---
+Range
+=====
+Begin by loading the `xlsx` package,
+```{r}
+library(xlsx)
+```
+and then the monthly starting salary data,
+```{r}
+table3_1<-read.xlsx("../../anderson9edata/Excel Files/Ch 03 Descriptive/Salary.xls",1)
+names(table3_1)<-c("graduate","monthlystartingsalary")
+```
+and compute the range
+```{r}
+range(table3_1$monthlystartingsalary)
+```
+Interquartile Range
+===================
+Just as in section 3.1, we will use Type 2 algorithm of the `quantile` function that is
+called by the `IQR` function to compute the interquartile range.
+```{r}
+IQR(table3_1$monthlystartingsalary,type=2)
+```
+Variance
+========
+Class size data as given in Section 3.1 is input.
+
+```{r}
+library(dplyr)
+table3_3<-data.frame(numberofstudentsinclass=c(46,54,42,46,32))
+```
+Use mutate from `dplyr` package to compute the mean, deviation about the mean, and squared 
+deviation about the mean.
+```{r}
+table3_3<-mutate(table3_3,
+                  mean=mean(numberofstudentsinclass),
+                  deviationaboutmean=numberofstudentsinclass-mean,
+                  squareddeviationaboutmean=deviationaboutmean**2)
+```
+And again for the data in Table 3.1. Note this time, we do not include the column of mean
+values. The mean of all of the observations of a variable is not an observation and should
+not be repeated on every row of a table. It is computed and stored in a separate vector
+`samplemean` to be used in the `mutate` function.
+```{r}
+table3_4<-data.frame(table3_1$monthlystartingsalary)
+names(table3_4)<-c("monthlysalary")
+samplemean<-mean(table3_4$monthlysalary)
+table3_4<-mutate(table3_4,
+                  deviationaboutmean=monthlysalary-samplemean,
+                  squareddeviationaboutmean=deviationaboutmean**2)
+table3_4
+```
+
+Standard Deviation
+==================
+Standard deviation for the sample of class sizes:
+```{r}
+sd(table3_3$numberofstudentsinclass)
+```
+Standard deviation for the data on starting salaries:
+```{r}
+sd(table3_4$monthlysalary)
+```
+
+Coefficient of Variation
+========================
+The `cv` function defined below computes the coefficient of variation as defined in Equation 3.8.
+```{r}
+cv <- function(x){
+  samplesd<-sd(x)
+  samplemean<-mean(x)
+  (samplesd/samplemean)*100
+}
+
+cv(table3_3$numberofstudentsinclass)
+cv(table3_4$monthlysalary)
+```

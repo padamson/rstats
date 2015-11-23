@@ -4,11 +4,15 @@ author: "Paul Adamson"
 date: "November 22, 2015"
 output: html_document
 ---
-
-Begin by loading the data:
+Mean
+====
+Begin by loading the `xlsx` package,
 
 ```{r}
 library(xlsx)
+```
+and then the monthly starting salary data:
+```{r}
 table3_1<-read.xlsx("../../anderson9edata/Excel Files/Ch 03 Descriptive/Salary.xls",1)
 names(table3_1)<-c("graduate","monthlystartingsalary")
 table3_1
@@ -20,4 +24,38 @@ The mean monthly salary is computed with one line:
 mean(table3_1$monthlystartingsalary)
 ```
 
-
+Median
+======
+```{r}
+median(table3_1$monthlystartingsalary)
+```
+Mode
+====
+R does not have a built-in mode function. (Well, actually the built-in `mode` function
+is used to get or set the type or storage mode of an object, not to calculate the statistical
+mode or *modus* of a collection of values.) Therefore, we define a function `modus` that should
+work for a vector of numeric, character, or factor data.
+```{r}
+modus <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+```
+We then read in the soft drink data from Table 2.2 and compute the modus.
+```{r}
+softdrink<-read.xlsx("../../anderson9edata/Excel Files/Ch 02 Descriptive/SoftDrink.xls",1)
+modus(softdrink$Brand.Purchased)
+```
+Percentiles
+===========
+Anderson uses averaging at discontinuities, or the *Type 2* algorithm of the `quantile` function
+in R.
+```{r}
+quantile(table3_1$monthlystartingsalary,probs=c(.85,.50),type=2)
+```
+Quartiles
+=========
+Division into quartiles is the default for the `quantile` function in R.
+```{r}
+quantile(table3_1$monthlystartingsalary,type=2)
+```
