@@ -1,0 +1,21 @@
+---
+title: "3.3 Measures Of Distribution Shape, Relative Location, and Detecting Outliers"
+author: "Paul Adamson"
+date: "November 22, 2015"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+table3_3<-data.frame(numberofstudentsinclass=c(46,54,42,46,32))
+```
+Use mutate from `dplyr` package to compute the mean, deviation about the mean, and z-score.
+```{r}
+samplemean<-mean(table3_3$numberofstudentsinclass)
+samplesd<-sd(table3_3$numberofstudentsinclass)
+table3_3<-mutate(table3_3,
+                  deviationaboutmean=numberofstudentsinclass-samplemean,
+                  zscore=(numberofstudentsinclass-samplemean)/samplesd)
+table3_3
+```
+

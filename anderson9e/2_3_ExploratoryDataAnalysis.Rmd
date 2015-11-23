@@ -1,0 +1,29 @@
+---
+title: '2.3 Exploratory Data Analysis: The Stem-and-Leaf Display'
+author: "Paul Adamson"
+date: "November 22, 2015"
+output: html_document
+---
+
+Begin by loading the `xlsx` package,
+
+```{r}
+library(xlsx)
+```
+and then the aptitude test result data:
+```{r}
+table2_9<-read.xlsx("../../anderson9edata/Excel Files/Ch 02 Descriptive/ApTest.xls",1)
+names(table2_9)<-lapply(names(table2_9),tolower)
+```
+The stem-and-leaf plots are created with the `stem` function:
+```{r}
+stem(table2_9$correct)
+stem(table2_9$correct,scale=2)
+```
+The data on hamburgers sold must be entered manually. Notice the plot varies slightly from
+the text since R rounds the value up by default.
+```{r}
+hamburgers<-c(1565,1852,1644,1766,1888,1912,2044,
+              1812,1790,1679,2008,1852,1967,1954,1733)
+stem(hamburgers)
+```
