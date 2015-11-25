@@ -1,0 +1,12 @@
+---
+title: "3.4 Exploratory Data Analysis"
+author: "Paul Adamson"
+date: "November 24, 2015"
+output: html_document
+---
+
+```{r}
+library(xlsx)
+table3_1<-read.xlsx("./data/Excel Files/Ch 03 Descriptive/Salary.xls",1)
+names(table3_1)<-c("graduate","monthlystartingsalary")
+```

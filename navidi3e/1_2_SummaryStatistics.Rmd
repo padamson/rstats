@@ -1,0 +1,114 @@
+---
+title: "1.2 Summary Statistics"
+author: "Paul Adamson"
+date: "November 25, 2015"
+output: html_document
+---
+In Example 1.9, we compute the mean of a random sample of the heights of five men.
+```{r}
+exm1_9<-read.csv("./ascii_datasets/ascii-comma/Ch1/exm1-9.txt")
+mean(exm1_9$Heights)
+```
+In Example 1.10, we compute the variance and standard deviation of the data used in 
+Example 1.9.
+```{r}
+var(exm1_9$Heights)
+sd(exm1_9$Heights)
+```
+In Example 1.11, we find the sample median of the data used in Example 1.9.
+```{r}
+median(exm1_9$Heights)
+```
+
+In Example 1.12, we compute the mean, median, and the 5%, 10%, and 20% trimmed means of
+some provided data.
+```{r}
+exm1_12<-read.csv("./ascii_datasets/ascii-comma/Ch1/exm1-12.txt")
+mean(exm1_12$Stress)
+median(exm1_12$Stress)
+mean(exm1_12$Stress, trim=0.05)
+mean(exm1_12$Stress, trim=0.1)
+mean(exm1_12$Stress, trim=0.2)
+```
+Note that the `trim` argument behaves slightly differently than the way that the 
+"p% trimmed mean" is defined in the text. the `mean` function always rounds the number
+of trimmed values down. Therefore, the 20% trimmed mean as computed with the `mean`
+function in R is equivalent to the mean of the 5th through 20th values.
+```{r}
+mean(exm1_12$Stress[5:20])
+```
+In Example 1.13, we find the mode and range of the sample from Example 1.12. R does
+not include a mode function, so we must define one (by adapting 
+[Chris' solution on stackoverflow](http://stackoverflow.com/questions/2547402/standard-library-function-in-r-for-finding-the-mode)). The following function `modeav` takes the
+following options for the `method` argument:
+
+- method = "mode" [default]: calculates the mode for a unimodal vector, else returns an NA
+- method = "nmodes": calculates the number of modes in the vector
+- method = "modes": lists all the modes for a unimodal or polymodal vector
+
+```{r}
+modeav <- function (x, method = "mode", na.rm = FALSE)
+{
+  x <- unlist(x)
+  if (na.rm)
+    x <- x[!is.na(x)]
+  u <- unique(x)
+  n <- length(u)
+  #get frequencies of each of the unique values in the vector
+  frequencies <- rep(0, n)
+  for (i in seq_len(n)) {
+    if (is.na(u[i])) {
+      frequencies[i] <- sum(is.na(x))
+    }
+    else {
+      frequencies[i] <- sum(x == u[i], na.rm = TRUE)
+    }
+  }
+  #mode if a unimodal vector, else NA
+  if (method == "mode" | is.na(method) | method == "")
+  {return(ifelse(length(frequencies[frequencies==max(frequencies)])>1,NA,u[which.max(frequencies)]))}
+  #number of modes
+  if(method == "nmode" | method == "nmodes")
+  {return(length(frequencies[frequencies==max(frequencies)]))}
+  #list of all modes
+  if (method == "modes" | method == "modevalues")
+  {return(u[which(frequencies==max(frequencies), arr.ind = FALSE, useNames = FALSE)])}  
+  #error trap the method
+  warning("Warning: method not recognised.  Valid methods are 'mode' [default], 'nmodes' and 'modes'")
+  return()
+}
+```
+And the solution is now straightforward.
+```{r}
+modeav(exm1_12$Stress, method="modes")
+rng<-range(exm1_12$Stress)
+rng[2]-rng[1]
+```
+In Example 1.14, the first and third quartiles are computed.
+```{r}
+quantile(exm1_12$Stress, probs=c(0.25, 0.75), type=2)
+```
+In Example 1.15, the 65th percentile is computed.
+```{r}
+quantile(exm1_12$Stress,probs=c(0.65), type=2)
+```
+Figure 1.4 provides some descriptive statistics of particulate matter emissions
+data at two different altitudes.
+```{r}
+table1_1<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-1.txt")
+table1_2<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-2.txt")
+library(plyr)
+summarize(table1_1,N=length(PM),sd=sd(PM))
+summary(table1_1$PM)
+summarize(table1_2,N=length(PM),sd=sd(PM))
+summary(table1_2$PM)
+```
+In Example 1.16, frequencies and sample proportions are computed from summary
+information from categorical data.
+```{r}
+exm1_16<-read.csv("./ascii_datasets/ascii-comma/Ch1/exm1-16.txt")
+freq<-exm1_16$Number
+freq
+sampleproportions<-exm1_16$Number/1000
+sampleproportions
+```
