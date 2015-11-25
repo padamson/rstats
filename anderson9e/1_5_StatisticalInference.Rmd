@@ -1,0 +1,16 @@
+---
+title: "1.5 Statistical Inference"
+author: "Paul Adamson"
+date: "November 23, 2015"
+output: html_document
+---
+
+```{r}
+library(xlsx)
+table1_5<-read.xlsx("./data/Excel Files/Ch 01 Introduction/Norris.xls",1)
+table1_5$Hours.until.Burnout
+```
+
+```{r}
+mean(table1_5$Hours.until.Burnout)
+```

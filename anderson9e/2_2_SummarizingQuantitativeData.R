@@ -1,6 +1,6 @@
 library(data.table)
 
-table2_5<-read.xlsx("./anderson9edata/Excel Files/Ch 02 Descriptive/Audit.xls",1,colIndex = 1)
+table2_5<-read.xlsx("./data/Excel Files/Ch 02 Descriptive/Audit.xls",1,colIndex = 1)
 table2_5$Audit.Time
 
 auditTime<-table2_5$Audit.Time

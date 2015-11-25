@@ -14,3 +14,6 @@ vignettes/*.pdf
 
 # html files generated from Rmd files
 *.html
+
+# Data that is included on the CD with the textbook
+anderson9e/data/

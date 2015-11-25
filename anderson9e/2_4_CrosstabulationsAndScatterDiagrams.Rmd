@@ -1,0 +1,46 @@
+---
+title: "2.4 Crosstabulations and Scatter Diagrams"
+author: "Paul Adamson"
+date: "November 23, 2015"
+output: html_document
+---
+```{r}
+library(xlsx)
+table2_10<-read.xlsx("./data/Excel Files/Ch 02 Descriptive/Restaurant.xls",1)
+names(table2_10)<-c("restaurant","qualityrating","mealprice")
+head(table2_10,10)
+```
+
+```{r}
+library(gmodels)
+minClassValue<-10
+maxClassValue<-50
+widthOfClasses<-10
+breaks<-seq(minClassValue,maxClassValue,by=widthOfClasses)
+table2_10.cut <- cut(table2_10$mealprice,breaks, right=FALSE)
+neworder<-c("Good","Very Good","Excellent")
+library(gdata)
+table2_10$qualityrating<-reorder.factor(table2_10$qualityrating,new.order = neworder)
+CrossTable(table2_10$qualityrating,table2_10.cut,
+           prop.r=FALSE,prop.c=FALSE,prop.t=FALSE,prop.chisq=FALSE,
+           chisq=FALSE,format="SPSS")
+table2_11<-table2_10
+table2_11.cut<-table2_10.cut
+CrossTable(table2_11$qualityrating,table2_11.cut,
+           digits=1,
+           prop.r=TRUE,prop.c=FALSE,prop.t=FALSE,prop.chisq=FALSE,
+           chisq=FALSE,format="SPSS")
+```
+```{r}
+table2_13<-read.xlsx("./data/Excel Files/Ch 02 Descriptive/Stereo.xls",1)
+names(table2_13)<-c("week","numcommercials","sales")
+table2_13
+library(ggplot2)
+library(devtools)
+source_gist("524eade46135f6348140")
+figure2_7<-ggplot(table2_13,aes(numcommercials,sales)) +
+  stat_smooth_func(geom="text",method="lm",hjust=0,parse=TRUE) +
+  geom_smooth(method="lm",se=FALSE) +
+  geom_point()+xlab("Number of Commercials") + ylab("Sales ($100s)")
+figure2_7
+```
