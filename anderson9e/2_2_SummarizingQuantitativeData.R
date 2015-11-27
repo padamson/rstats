@@ -21,7 +21,14 @@ table2_7
 #the equivalent to dot plot in R is the stripchart
 stripchart(table2_5$Audit.Time,method="stack",offset=1.25,xlab="Audit Time (days)",frame.plot = FALSE,xlim=c(10,35))
 
-barplot(table2_6$frequency,names.arg=table2_6$audittime, axis.lty=0, xlab="Audit Time (days)", ylab="Frequency", ylim=c(0,8),plot=TRUE,space=c(0))
+barplot(table2_6$frequency,
+        names.arg=table2_6$audittime, 
+        axis.lty=0, 
+        xlab="Audit Time (days)", 
+        ylab="Frequency", 
+        ylim=c(0,8),
+        plot=TRUE,
+        space=c(0))
 
 table2_8<-data.frame(cumsum(table(auditTime.cut)))
 setDT(table2_8, keep.rownames = TRUE)[]
