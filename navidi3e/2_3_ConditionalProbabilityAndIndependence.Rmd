@@ -1,0 +1,107 @@
+---
+title: "2.3 Conditional Probability and Independence"
+author: "Paul Adamson"
+date: "November 28, 2015"
+output: html_document
+---
+```{r}
+example2_6<-read.csv("./ascii_datasets/ascii-comma/Ch2/exm2-6.txt")
+names(example2_6)<-c("length","toothin","correctdiameter","toothick")
+example2_6$length<-c("tooshort","correctlength","toolong")
+require(dplyr)
+require(data.table)
+example2_6.melted<-melt(example2_6)
+names(example2_6.melted)<-c("length","diameter","frequency")
+example2_6.melted
+correctdiameter<-sum(filter(example2_6.melted,diameter=="correctdiameter")$frequency)
+total<-sum(example2_6.melted$frequency)
+correctdiameter/total
+correctlength<-sum(filter(example2_6.melted,length=="correctlength")$frequency)
+correctdiameter.given.correctlength<-sum(filter(example2_6.melted,length=="correctlength",
+                                                diameter=="correctdiameter")$frequency)
+correctdiameter.given.correctlength/correctlength
+```
+
+Example 2.17
+```{r}
+correctdiameter.given.toolong<-sum(filter(example2_6.melted,length=="toolong",
+                                                diameter=="correctdiameter")$frequency)
+toolong<-sum(filter(example2_6.melted,length=="toolong")$frequency)
+correctdiameter.given.toolong/toolong
+correctdiameter/total
+```
+
+Example 2.18
+```{r}
+0.01/0.03
+```
+
+Example 2.19
+```{r}
+0.01/0.02
+```
+
+Example 2.20
+```{r}
+toolong.given.toothin<-sum(filter(example2_6.melted,length=="toolong",
+                                                diameter=="toothin")$frequency)
+toolong<-sum(filter(example2_6.melted,length=="toolong")$frequency)
+toothin<-sum(filter(example2_6.melted,diameter=="toothin")$frequency)
+toolong/total
+toolong.given.toothin/toothin
+```
+Example 2.21
+```{r}
+0.05*0.10
+```
+
+Example 2.22
+```{r}
+(1-0.08)*(1-0.05)
+```
+
+Example 2.23
+```{r}
+(1-0.20)**5
+```
+
+Example 2.24
+```{r}
+1-0.20**5
+```
+
+Example 2.25
+```{r}
+require(dplyr)
+carengines<-data.frame(enginesize=c("small","medium","large"),density=c(.45,.35,.20),
+                       emissionsfail=c(.1,.12,.15))
+sum(carengines$density*carengines$emissionsfail)
+```
+
+Example 2.26
+```{r}
+(0.99*0.005)/(0.99*0.005+0.01*0.995)
+```
+
+Example 2.27
+```{r}
+carengines<-mutate(carengines,fail.given.enginesize=density*emissionsfail)
+filter(carengines,enginesize=="small")$fail.given.enginesize/sum(carengines$fail.given.enginesize)
+```
+
+Example 2.28
+```{r}
+0.98*0.95
+```
+
+Example 2.29
+```{r}
+0.90+0.85-0.90*0.85
+```
+
+Example 2.30 is not presented here yet. It might be nice to develop a package that
+computes system reliability given a matrix that describes the connections and
+component reliabilities. The package could also use the `diagram` package to present
+a flow diagram.
+
+

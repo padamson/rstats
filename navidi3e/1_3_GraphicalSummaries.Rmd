@@ -8,7 +8,6 @@ Stem-and-leaf plots are a type of graphical summary of data used to visualize li
 ```{r}
 table1_3<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-3.txt")
 stem(table1_3$Duration)
-stem(table2_9$correct,scale=2)
 table1_2<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-2.txt")
 stem(table1_2$PM)
 ```
@@ -24,6 +23,7 @@ stripchart(table1_3$Duration,
            xlim=c(40,100),
            frame.plot = FALSE)
 ```
+
 ```{r}
 minClassValue<-1
 maxClassValue<-25
@@ -33,6 +33,7 @@ table1_2.cut = cut(table1_2$PM,breaks, right=FALSE)
 table1_4<-as.data.frame(table(table1_2.cut))
 names(table1_4)<-c("interval","frequency")
 table1_4
+require(dplyr)
 table1_4<-mutate(table1_4,
                  relativefrequency=frequency/sum(table1_4$frequency),
                  density=relativefrequency/widthOfClasses)
@@ -73,3 +74,116 @@ barplot(table1_5$density,table1_5$width,
         ylim=c(0,.15),
         plot=TRUE,
         space=c(0))
+```
+
+Example 1.17
+```{r}
+sum(table1_4$relativefrequency[4:5])
+```
+
+Example 1.18
+```{r}
+sum(table1_5$relativefrequency[5:6])
+```
+
+```{r}
+table1_6<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-6.txt")
+minClassValue<-40
+maxClassValue<-95
+widthOfClasses<-5
+breaks = seq(minClassValue,maxClassValue,by=widthOfClasses)
+table1_6.full.cut = cut(table1_6$Dormancy,breaks, right=FALSE)
+table1_6.full<-as.data.frame(table(table1_6.full.cut))
+names(table1_6.full)<-c("interval","frequency")
+table1_6.full<-mutate(table1_6.full,
+                 relativefrequency=frequency/sum(table1_6.full$frequency),
+                 density=relativefrequency/widthOfClasses)
+library(dplyr)
+table1_6.short.cut=cut(filter(table1_6,Eruption=="Short")$Dormancy,breaks,right=FALSE)
+table1_6.short<-as.data.frame(table(table1_6.short.cut))
+names(table1_6.short)<-c("interval","frequency")
+table1_6.short<-mutate(table1_6.short,
+                 relativefrequency=frequency/sum(table1_6.short$frequency),
+                 density=relativefrequency/widthOfClasses)
+
+
+cutbygroup<-function(x,column,breaks,filter_col,filter_val) { 
+  require(dplyr)
+  x.filter <- x %>% 
+    filter_(lazyeval::interp(quote(a %in% b), a=as.name(filter_col), b=filter_val)) %>% 
+    select_(lazyeval::interp(quote(a), a=as.name(column)))
+  x.cut<-cut(unlist(x.filter),breaks,right=FALSE)
+  x.cutbygroup<-as.data.frame(table(x.cut))
+  names(x.cutbygroup)<-c("interval","frequency")
+  width<-numeric(0)
+  for (i in 1:nrow(x.cutbygroup)) {
+   width[i] <- breaks[i+1] - breaks[i]
+  }
+  x.cutbygroup<-cbind(x.cutbygroup,width)
+  x.cutbygroup<-mutate(x.cutbygroup,
+           relativefrequency=frequency/sum(x.cutbygroup$frequency),
+           density=relativefrequency/width)
+
+    return(x.cutbygroup)
+}
+
+table1_6.short<-cutbygroup(x=table1_6,
+                           column = "Dormancy", 
+                           breaks=breaks,
+                           filter_col = "Eruption",
+                           filter_val = "Short")
+table1_6.long<-cutbygroup(x=table1_6,
+                           column = "Dormancy", 
+                           breaks=breaks,
+                           filter_col = "Eruption",
+                           filter_val = "Long")
+ 
+par(mfrow=c(1,3))
+barplot(table1_6.full$density,
+        names.arg=table1_6.full$interval, 
+        axis.lty=0, 
+        xlab=c("Duration (minutes)","(a)"), 
+        ylab="Density", 
+        ylim=c(0,.05),
+        plot=TRUE,
+        space=c(0))
+barplot(table1_6.short$density,
+        names.arg=table1_6.short$interval, 
+        axis.lty=0, 
+        xlab=c("Duration (minutes)","(b)"), 
+        ylab="Density", 
+        ylim=c(0,.1),
+        plot=TRUE,
+        space=c(0))
+barplot(table1_6.long$density,
+        names.arg=table1_6.long$interval, 
+        axis.lty=0, 
+        xlab=c("Duration (minutes)","(c)"), 
+        ylab="Density", 
+        ylim=c(0,.1),
+        plot=TRUE,
+        space=c(0))
+```
+
+```{r}
+boxplot(table1_6$Dormancy,ylab="Duration (minutes)")
+```
+
+```{r}
+table1_1<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-1.txt")
+table1_2<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-2.txt")
+boxplot(x=c(table1_1,table1_2),
+        names=c("Low Altitude","High Altitude"),
+        ylab="Emissions (g/gal")
+```
+
+Note: there was a stray "tilde (~)" in the data in `table1-7.txt` that initially
+caused column 7 to be read in as factor data.
+```{r}
+table1_7<-read.csv("./ascii_datasets/ascii-comma/Ch1/table1-7.txt")
+run1<-unlist(table1_7[1:12,3:11])
+run2<-unlist(table1_7[13:24,3:11])
+boxplot(run1,run2,
+        names = c("Run 1","Run 2"),
+        ylab = "Thickness (Angstroms)")
+```

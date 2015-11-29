@@ -1,0 +1,59 @@
+---
+title: "2.2 Counting Methods"
+author: "Paul Adamson"
+date: "November 28, 2015"
+output: html_document
+---
+
+Example 2.10
+```{r}
+3*2
+
+l<-list(c("red","blue","green"),c("large","small"))
+options<-expand.grid(l)
+names(options)<-c("color","size")
+options
+nrow(options)
+```
+
+Example 2.11
+```{r}
+3*4*2*3
+
+l<-list(1:3,1:4,1:2,1:3)
+nrow(expand.grid(l))
+```
+
+Example 2.12
+```{r}
+factorial(5)
+
+require(gtools)
+nrow(permutations(5,5))
+```
+
+Example 2.13
+```{r}
+factorial(5)/factorial(5-3)
+
+nrow(permutations(5,3))
+```
+
+Example 2.14
+```{r}
+factorial(30)/(factorial(5)*factorial(30-5))
+
+choose(30,5)
+
+nrow(combinations(30,5))
+```
+
+Example 2.15
+```{r}
+factorial(20)/(factorial(3)*factorial(5)*factorial(4)*factorial(2)*factorial(3)*factorial(3))
+```
+
+Example 2.16
+```{r}
+(6*8+4*5+2*3)/((6+4+2)*(8+5+3))
+```

@@ -1,0 +1,78 @@
+---
+title: "2.1 Basic Ideas"
+author: "Paul Adamson"
+date: "November 27, 2015"
+output: html_document
+---
+Example 2.1
+```{r}
+require(dplyr)
+a<-c(9,10,11,12)
+b<-c(18,19,20,21)
+S<-arrange(expand.grid(a=a,b=b),a)
+A<-filter(S,a>10)
+B<-filter(S,b<19)
+C<-filter(S,a+b==28)
+S
+A
+B
+C
+```
+Example 2.2
+```{r}
+arrange(union(B,C),b,a)
+arrange(intersect(A,anti_join(S,B)),a,b)
+```
+For Example 2.3, we can determine if two events are mutually exclusive by finding
+their intersection. By this method we see that A and C are mutually exclusive.
+```{r}
+intersect(A,B)
+intersect(B,C)
+intersect(A,C)
+```
+For Example 2.4, we can build a data frame with a single row, where each column
+is the probability for one of the mutually exclusive events.
+```{r}
+P<-data.frame("bullseye"=0.1,"innerring"=.25,"outerring"=0.45)
+```
+Then, we can use the `mutate` function from the `dplyr` package to add columns
+for the "hits target" and "misses target" probabilities.
+```{r}
+P<-mutate(P,hitstarget=P$bullseye+P$innerring+P$outerring)
+P$hitstarget
+P<-mutate(P,missestarget=1-P$hitstarget)
+P$missestarget
+```
+Example 2.5
+```{r}
+example2_5<-read.csv("./ascii_datasets/ascii-comma/Ch2/exm2-5.txt")
+S<-data.frame(Number.of.Crashes=c(0,1,2,3,4))
+S
+A<-filter(S,Number.of.Crashes>2)
+A
+B<-filter(S,Number.of.Crashes>=1)
+B
+A.indices.in.S<-na.omit(match(A$Number.of.Crashes,S$Number.of.Crashes))
+sum(example2_5$Probability[A.indices.in.S])
+Bc.indices.in.S<-na.omit(match(anti_join(S,B)$Number.of.Crashes,S$Number.of.Crashes))
+1-sum(example2_5$Probability[Bc.indices.in.S])
+B.indices.in.S<-na.omit(match(B$Number.of.Crashes,S$Number.of.Crashes))
+sum(example2_5$Probability[B.indices.in.S])
+```
+Example 2.6
+```{r}
+example2_6<-read.csv("./ascii_datasets/ascii-comma/Ch2/exm2-6.txt")
+names(example2_6)<-c("length","toothin","correctdiameter","toothick")
+example2_6$length<-c("tooshort","correctlength","toolong")
+require(data.table)
+example2_6.melted<-melt(example2_6)
+names(example2_6.melted)<-c("length","diameter","frequency")
+tooshort<-sum(filter(example2_6.melted,length=="tooshort")$frequency)
+total<-sum(example2_6.melted$frequency)
+tooshort/total
+```
+Example 2.7
+```{r}
+tooshort.or.toothick<-sum(filter(example2_6.melted,length=="tooshort" | diameter=="toothick")$frequency)
+tooshort.or.toothick/total
+```
