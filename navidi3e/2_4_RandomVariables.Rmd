@@ -1,0 +1,18 @@
+---
+title: "2.4 Random Variables"
+author: "Paul Adamson"
+date: "November 29, 2015"
+output: html_document
+---
+
+Example 2.31
+```{r}
+probspace<-expand.grid(o1=9:11,o2=19:21)
+require(dplyr)
+probspace<-mutate(probspace,X=o1+o2,P=1/nrow(probspace))
+probspace
+by_X<-group_by(probspace,X)
+example2_31<-summarize(by_X,P=sum(P))
+example2_31
+```
+
