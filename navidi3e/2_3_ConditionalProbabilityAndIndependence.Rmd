@@ -31,6 +31,12 @@ correctdiameter.given.toolong/toolong
 correctdiameter/total
 ```
 
+```{r}
+require(venneuler)
+v <- venneuler(c(B=500, A=500, "B&A"=100))
+v$colors<-c(.5,1); plot(v)
+```
+
 Example 2.18
 ```{r}
 0.01/0.03
@@ -101,7 +107,18 @@ Example 2.29
 
 Example 2.30 is not presented here yet. It might be nice to develop a package that
 computes system reliability given a matrix that describes the connections and
-component reliabilities. The package could also use the `diagram` package to present
+component reliabilities. The package could possibly use the `diagram` package to present
 a flow diagram.
+```{r}
+require(diagram)
+par(mar = c(1, 1, 1, 1), mfrow = c(2, 2))
+names <- c("A", "B", "C", "D")
+M <- matrix(nrow = 4, ncol = 4, byrow = TRUE, data = 0)
+M[2, 1] <- M[3, 1] <- M[4, 2] <- M[4, 3] <- "flow"
+plotmat(M, pos = c(1, 2, 1), curve = 0, name = names, lwd = 1,
+        box.lwd = 2, cex.txt = 0.8, box.type = "square", box.prop = 1.0)
+```
+
+
 
 

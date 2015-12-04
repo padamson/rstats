@@ -7,12 +7,84 @@ output: html_document
 
 Example 2.31
 ```{r}
-probspace<-expand.grid(o1=9:11,o2=19:21)
 require(dplyr)
-probspace<-mutate(probspace,X=o1+o2,P=1/nrow(probspace))
+outcome1<-9:11
+outcome2<-19:21
+probspace<-expand.grid(o1=outcome1,o2=outcome2) %>%
+  mutate(x=o1+o2,P=1/(length(outcome1)*length(outcome2))) %>% 
+  group_by(x) %>%
+  summarize(P=sum(P))
 probspace
-by_X<-group_by(probspace,X)
-example2_31<-summarize(by_X,P=sum(P))
-example2_31
+```
+Example 2.32
+```{r}
+require(dplyr)
+y<-c(0:5)
+P<-c(.09,.22,.26,.20,.12,.11)
+probspace<-data.frame(y,P)
+probspace
+```
+Example 2.33
+```{r}
+df<-data.frame(lifetime=c("[0-100]","(100-500]","(500-inf]"),P=c(.1,.5,.4))
+df
+.1+.5
+```
+Example 2.41
+```{r}
+P<-function(x) {
+  ifelse (x > 0 & x < 1,
+    1.25 * (1-x**4),
+    0.0)
+}
+curve(P, 0,1,n=1000)
+x.min <- 0.8
+x.max <- 1.0
+resolution <- 0.01
+cord.x <- c(x.min,seq(x.min,x.max,resolution),x.max) 
+cord.y <- c(0,P(seq(x.min,x.max,resolution)),0) 
+polygon(cord.x,cord.y,col='skyblue')
+integrate(P,0.8,Inf)
 ```
 
+Example 2.42
+```{r}
+x.min<- -0.25
+x.max<- 1.25
+resolution<- 0.01
+xlist<-seq(x.min,x.max,resolution)
+ylist<-numeric()
+for (x in xlist) {
+  ylist<-append(ylist,integrate(P,x.min,x)$value)
+}
+plot(xlist,ylist,type="l",xlab = "x",ylab="F(x)")
+```
+
+```{r}
+df<-data.frame(xlist,ylist)
+plot(df,type="l",xlab = "x",ylab="F(x)")
+```
+
+```{r}
+ylist<-cumsum(P(seq(x.min,x.max,by=resolution))*resolution )
+df<-data.frame(xlist,ylist)
+plot(df,type="l",xlab = "x",ylab="F(x)")
+```
+
+```{r}
+plot(Vectorize(function(X)integrate(P,x.min,X)$value),x.min,x.max)
+```
+
+Example 2.44
+```{r}
+xP<-function(x){
+  x*P(x)
+}
+mux<-integrate(xP,-Inf,Inf)$value
+mux
+
+x2P<-function(x){
+  (x**2)*P(x)
+}
+variance<-integrate(x2P,-Inf,Inf)$value - mux**2
+variance
